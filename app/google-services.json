@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "445786105179",
+    "project_id": "swiftsafe2026",
+    "storage_bucket": "swiftsafe2026.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445786105179:android:b3e8745531e69de71da67e",
+        "android_client_info": {
+          "package_name": "com.swiftsafe.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAL6I9WZoEQiJQIQrBGdBpqMQ5vVO5nu0E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
