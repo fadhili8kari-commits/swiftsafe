@@ -56,9 +56,20 @@ class TransactionAdapter(private val transactions: List<Transaction>,
             "From: ${transaction.senderId}"
         }
 
-        // Format date
-        val sdf = SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault())
-        holder.tvDate.text = sdf.format(Date(transaction.createdAt))
+        val now = System.currentTimeMillis()
+        val diff = now - transaction.createdAt
+        holder.tvDate.text = when {
+            diff < 60000 -> "Just now"
+            diff < 3600000 -> "${diff / 60000} minutes ago"
+            diff < 86400000 -> "Today ${
+                SimpleDateFormat("HH:mm", Locale.getDefault())
+                    .format(Date(transaction.createdAt))}"
+            diff < 172800000 -> "Yesterday ${
+                SimpleDateFormat("HH:mm", Locale.getDefault())
+                    .format(Date(transaction.createdAt))}"
+            else -> SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+                .format(Date(transaction.createdAt))
+        }
 
         // Set status
         holder.tvStatus.text = transaction.status.capitalize()

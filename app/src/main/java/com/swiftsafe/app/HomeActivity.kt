@@ -14,6 +14,8 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private var isBalanceVisible = true
+    private var currentBalance = "KES 0.00"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +30,8 @@ class HomeActivity : AppCompatActivity() {
         val tvUserName = findViewById<TextView>(R.id.tvUserName)
         val tvBalance = findViewById<TextView>(R.id.tvBalance)
         val tvInsight = findViewById<TextView>(R.id.tvInsight)
+        val tvLogout = findViewById<TextView>(R.id.tvLogout)
+        val tvToggleBalance = findViewById<TextView>(R.id.tvToggleBalance)
         val btnSend = findViewById<LinearLayout>(R.id.btnSend)
         val btnHistory = findViewById<LinearLayout>(R.id.btnHistory)
         val btnWallet = findViewById<LinearLayout>(R.id.btnWallet)
@@ -49,7 +53,7 @@ class HomeActivity : AppCompatActivity() {
                 .addOnSuccessListener { document ->
                     if (document != null) {
                         val name = document.getString("name") ?: "User"
-                        tvUserName.text = name.split(" ")[0] // First name only
+                        tvUserName.text = name.split(" ")[0]
                     }
                 }
 
@@ -58,9 +62,10 @@ class HomeActivity : AppCompatActivity() {
                 .addSnapshotListener { snapshot, _ ->
                     if (snapshot != null) {
                         val balance = snapshot.getDouble("balance") ?: 0.0
-                        tvBalance.text = "KES %.2f".format(balance)
-
-                        // Smart insight based on balance
+                        currentBalance = "KES %.2f".format(balance)
+                        if (isBalanceVisible) {
+                            tvBalance.text = currentBalance
+                        }
                         tvInsight.text = when {
                             balance == 0.0 -> "👋 Welcome! Deposit money to get started."
                             balance < 100 -> "⚠️ Your balance is running low. Consider topping up!"
@@ -83,13 +88,13 @@ class HomeActivity : AppCompatActivity() {
         btnWallet.setOnClickListener {
             startActivity(Intent(this, WalletActivity::class.java))
         }
+
         btnRequest.setOnClickListener {
             startActivity(Intent(this, FinancialIntelligenceActivity::class.java))
         }
-        val tvLogout = findViewById<TextView>(R.id.tvLogout)
 
+        // Logout button
         tvLogout.setOnClickListener {
-            // Show logout confirmation
             androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("Logout")
                 .setMessage("Are you sure you want to logout?")
@@ -101,5 +106,29 @@ class HomeActivity : AppCompatActivity() {
                 .setNegativeButton("Cancel", null)
                 .show()
         }
+
+        // Toggle balance visibility
+        tvToggleBalance.setOnClickListener {
+            isBalanceVisible = !isBalanceVisible
+            if (isBalanceVisible) {
+                tvBalance.text = currentBalance
+                tvToggleBalance.text = "👁️"
+            } else {
+                tvBalance.text = "KES ****"
+                tvToggleBalance.text = "👁️‍🗨️"
+            }
+        }
+    }
+
+    // Back button protection
+    override fun onBackPressed() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Exit SwiftSafe")
+            .setMessage("Are you sure you want to exit?")
+            .setPositiveButton("Exit") { _, _ ->
+                super.onBackPressed()
+            }
+            .setNegativeButton("Stay", null)
+            .show()
     }
 }

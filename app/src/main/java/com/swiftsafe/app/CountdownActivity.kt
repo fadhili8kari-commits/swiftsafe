@@ -62,7 +62,7 @@ class CountdownActivity : AppCompatActivity() {
             .child(transactionId)
             .setValue(pendingTransaction)
 
-        // Start 30 second countdown
+        // Start 30 seconds countdown
         countDownTimer = object : CountDownTimer(30000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val secondsLeft = millisUntilFinished / 1000
@@ -151,15 +151,19 @@ class CountdownActivity : AppCompatActivity() {
                             .child(transactionId)
                             .removeValue()
 
-                        Toast.makeText(
-                            this,
-                            "Transaction completed! ✅",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                        // Go back to Home
-                        startActivity(Intent(this, HomeActivity::class.java))
-                        finish()
+                        // Show success dialog
+                        androidx.appcompat.app.AlertDialog.Builder(this)
+                            .setTitle("✅ Transaction Complete!")
+                            .setMessage(
+                                "You successfully sent KES %.2f to %s"
+                                    .format(amount, recipient)
+                            )
+                            .setPositiveButton("Done") { _, _ ->
+                                startActivity(Intent(this, HomeActivity::class.java))
+                                finish()
+                            }
+                            .setCancelable(false)
+                            .show()
                     }
             }
     }
