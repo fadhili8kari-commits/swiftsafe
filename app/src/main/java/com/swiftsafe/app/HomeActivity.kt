@@ -31,6 +31,7 @@ class HomeActivity : AppCompatActivity() {
         val btnSend = findViewById<LinearLayout>(R.id.btnSend)
         val btnHistory = findViewById<LinearLayout>(R.id.btnHistory)
         val btnWallet = findViewById<LinearLayout>(R.id.btnWallet)
+        val btnRequest = findViewById<LinearLayout>(R.id.btnRequest)
 
         // Set greeting based on time of day
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
@@ -76,11 +77,29 @@ class HomeActivity : AppCompatActivity() {
         }
 
         btnHistory.setOnClickListener {
-            Toast.makeText(this, "History — Coming soon!", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, TransactionHistoryActivity::class.java))
         }
 
         btnWallet.setOnClickListener {
-            Toast.makeText(this, "Wallet — Coming soon!", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, WalletActivity::class.java))
+        }
+        btnRequest.setOnClickListener {
+            startActivity(Intent(this, FinancialIntelligenceActivity::class.java))
+        }
+        val tvLogout = findViewById<TextView>(R.id.tvLogout)
+
+        tvLogout.setOnClickListener {
+            // Show logout confirmation
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Logout") { _, _ ->
+                    auth.signOut()
+                    startActivity(Intent(this, LoginActivity::class.java))
+                    finish()
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
         }
     }
 }

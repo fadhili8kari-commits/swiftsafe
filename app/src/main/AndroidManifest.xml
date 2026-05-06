@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
     <!-- Internet permission for Firebase -->
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -13,45 +13,66 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SwiftSafe">
-        <activity
-            android:name=".CountdownActivity"
-            android:exported="false" />
-        <activity
-            android:name=".SendMoneyActivity"
-            android:exported="false" />
-        <activity
-            android:name=".HomeActivity"
-            android:exported="false" /> <!-- Home Screen -->
-        <activity
-            android:name=".HomeActivity"
-            android:exported="false" /> <!-- Splash Screen — LAUNCHER (first screen) -->
+
+        <!-- Splash Screen — LAUNCHER (first screen) -->
         <activity
             android:name=".SplashActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.SwiftSafe.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Login Screen -->
+        </activity>
+
+        <!-- Login Screen -->
         <activity
             android:name=".LoginActivity"
-            android:exported="false" /> <!-- Sign Up Screen -->
+            android:exported="false" />
+
+        <!-- Sign Up Screen -->
         <activity
             android:name=".SignUpActivity"
-            android:exported="false" /> <!-- Main Activity (we'll repurpose this later) -->
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Home Screen -->
         <activity
-            android:name=".MainActivity"
+            android:name=".HomeActivity"
             android:exported="false" />
+
         <!-- Send Money Screen -->
         <activity
             android:name=".SendMoneyActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
         <!-- Countdown Screen -->
         <activity
             android:name=".CountdownActivity"
             android:exported="false" />
+
+        <!-- Transaction History Screen -->
+        <activity
+            android:name=".TransactionHistoryActivity"
+            android:exported="false" />
+
+        <!-- Wallet Screen -->
+        <activity
+            android:name=".WalletActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+
+        <!-- Financial Intelligence Screen -->
+        <activity
+            android:name=".FinancialIntelligenceActivity"
+            android:exported="false" />
+
+        <!-- Main Activity -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

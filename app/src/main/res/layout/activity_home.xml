@@ -11,7 +11,7 @@
         android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#1A73E8"
+        android:background="@color/swiftsafe_blue"
         android:orientation="horizontal"
         android:padding="16dp"
         android:gravity="center_vertical"
@@ -19,6 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Greeting & Name -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -29,7 +30,7 @@
                 android:id="@+id/tvGreeting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Good morning,"
+                android:text="Good afternoon,"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"/>
 
@@ -44,6 +45,7 @@
 
         </LinearLayout>
 
+        <!-- SwiftSafe title centered -->
         <TextView
             android:id="@+id/tvAppBarName"
             android:layout_width="wrap_content"
@@ -53,6 +55,15 @@
             android:textSize="18sp"
             android:textStyle="bold"/>
 
+        <!-- Settings/Logout icon -->
+        <TextView
+            android:id="@+id/tvLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⚙️"
+            android:textSize="24sp"
+            android:layout_marginStart="12dp"/>
+
     </LinearLayout>
 
     <!-- Balance Card -->
@@ -61,7 +72,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        app:cardBackgroundColor="#1A73E8"
+        app:cardBackgroundColor="#1A2744"
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -151,13 +162,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📥"
+                android:text="🧠"
                 android:textSize="28sp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Request"
+                android:text="Insights"
                 android:textColor="#333333"
                 android:textSize="12sp"
                 android:layout_marginTop="4dp"/>

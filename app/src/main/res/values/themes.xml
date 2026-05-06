@@ -1,9 +1,57 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme -->
     <style name="Base.Theme.SwiftSafe" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Primary brand color — Navy Blue from logo -->
+        <item name="colorPrimary">@color/swiftsafe_blue</item>
+        <item name="colorPrimaryDark">@color/swiftsafe_dark_blue</item>
+        <item name="colorPrimaryVariant">@color/swiftsafe_light_blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Secondary color — Silver from logo -->
+        <item name="colorSecondary">@color/swiftsafe_silver</item>
+        <item name="colorOnSecondary">@color/swiftsafe_blue</item>
+
+        <!-- Background colors -->
+        <item name="android:colorBackground">@color/background_grey</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/text_dark</item>
+
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@color/swiftsafe_dark_blue</item>
+        <item name="android:navigationBarColor">@color/white</item>
+
+        <!-- Text -->
+        <item name="android:textColorPrimary">@color/text_dark</item>
+        <item name="android:textColorSecondary">@color/text_medium</item>
+
+        <!-- Button style -->
+        <item name="materialButtonStyle">@style/SwiftSafe.Button</item>
     </style>
 
     <style name="Theme.SwiftSafe" parent="Base.Theme.SwiftSafe" />
+
+    <!-- Custom Button Style -->
+    <style name="SwiftSafe.Button" parent="Widget.Material3.Button">
+        <item name="cornerRadius">8dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="backgroundTint">@color/swiftsafe_blue</item>
+    </style>
+
+    <!-- Card Style -->
+    <style name="SwiftSafe.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="contentPaddingLeft">16dp</item>
+        <item name="contentPaddingRight">16dp</item>
+        <item name="contentPaddingTop">16dp</item>
+        <item name="contentPaddingBottom">16dp</item>
+    </style>
+
+    <!-- Splash Screen Style -->
+    <style name="Theme.SwiftSafe.Splash" parent="Theme.SwiftSafe">
+        <item name="android:statusBarColor">@color/swiftsafe_blue</item>
+        <item name="android:navigationBarColor">@color/swiftsafe_blue</item>
+    </style>
+
 </resources>
