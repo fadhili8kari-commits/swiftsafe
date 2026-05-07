@@ -37,7 +37,7 @@ class LoginActivity : AppCompatActivity() {
 
         // Login button click
         btnLogin.setOnClickListener {
-            val email = etEmail.text.toString().trim()
+            val email = etEmail.text.toString().trim().lowercase()
             val password = etPassword.text.toString().trim()
 
             // Validate inputs

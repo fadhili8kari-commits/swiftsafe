@@ -1,6 +1,9 @@
 package com.swiftsafe.app
 
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.TextView
@@ -28,23 +31,19 @@ class CountdownActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         realtimeDb = FirebaseDatabase.getInstance()
 
-        // Get transaction details from SendMoneyActivity
         val recipient = intent.getStringExtra("recipient") ?: ""
         val amount = intent.getDoubleExtra("amount", 0.0)
         val note = intent.getStringExtra("note") ?: ""
 
-        // Get UI references
         val tvRecipient = findViewById<TextView>(R.id.tvRecipient)
         val tvAmount = findViewById<TextView>(R.id.tvAmount)
         val tvCountdown = findViewById<TextView>(R.id.tvCountdown)
         val tvStatus = findViewById<TextView>(R.id.tvStatus)
         val btnUndo = findViewById<MaterialButton>(R.id.btnUndo)
 
-        // Display transaction details
         tvRecipient.text = "To: $recipient"
         tvAmount.text = "KES %.2f".format(amount)
 
-        // Save pending transaction to Realtime Database
         val userId = auth.currentUser?.uid ?: return
         transactionId = realtimeDb.reference.push().key ?: return
 
@@ -62,30 +61,23 @@ class CountdownActivity : AppCompatActivity() {
             .child(transactionId)
             .setValue(pendingTransaction)
 
-        // Start 30 seconds countdown
         countDownTimer = object : CountDownTimer(30000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val secondsLeft = millisUntilFinished / 1000
                 tvCountdown.text = secondsLeft.toString()
-
-                // Change color to red when less than 10 seconds
                 if (secondsLeft <= 10) {
-                    tvCountdown.parent.let {
-                        tvCountdown.setBackgroundResource(R.drawable.countdown_circle_red)
-                    }
+                    tvCountdown.setBackgroundResource(R.drawable.countdown_circle_red)
                     tvStatus.text = "⚠️ Hurry! Only $secondsLeft seconds left to undo!"
                 }
             }
 
             override fun onFinish() {
                 if (!isUndone) {
-                    // Timer finished — complete the transaction
                     completeTransaction(userId, recipient, amount, note)
                 }
             }
         }.start()
 
-        // Undo button click
         btnUndo.setOnClickListener {
             if (!isUndone) {
                 isUndone = true
@@ -95,19 +87,44 @@ class CountdownActivity : AppCompatActivity() {
         }
     }
 
+    private fun isInternetAvailable(): Boolean {
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val network = connectivityManager.activeNetwork ?: return false
+            val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+            capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        } else {
+            @Suppress("DEPRECATION")
+            connectivityManager.activeNetworkInfo?.isConnected == true
+        }
+    }
+
     private fun completeTransaction(
         userId: String,
         recipient: String,
         amount: Double,
         note: String
     ) {
-        // Find recipient by email
+        if (!isInternetAvailable()) {
+            Toast.makeText(
+                this,
+                "⚠️ No internet. Transaction cancelled for safety.",
+                Toast.LENGTH_LONG
+            ).show()
+            undoTransaction()
+            return
+        }
+
         db.collection("users")
             .whereEqualTo("email", recipient)
             .get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
-                    Toast.makeText(this, "Recipient not found!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this,
+                        "Recipient not found!",
+                        Toast.LENGTH_LONG
+                    ).show()
                     undoTransaction()
                     return@addOnSuccessListener
                 }
@@ -115,7 +132,6 @@ class CountdownActivity : AppCompatActivity() {
                 val recipientDoc = documents.first()
                 val recipientId = recipientDoc.id
 
-                // Deduct from sender
                 db.collection("wallets").document(userId)
                     .get()
                     .addOnSuccessListener { senderWallet ->
@@ -125,19 +141,19 @@ class CountdownActivity : AppCompatActivity() {
                         db.collection("wallets").document(userId)
                             .update("balance", newSenderBalance)
 
-                        // Add to recipient
                         db.collection("wallets").document(recipientId)
                             .get()
                             .addOnSuccessListener { recipientWallet ->
-                                val recipientBalance = recipientWallet.getDouble("balance") ?: 0.0
+                                val recipientBalance =
+                                    recipientWallet.getDouble("balance") ?: 0.0
                                 db.collection("wallets").document(recipientId)
                                     .update("balance", recipientBalance + amount)
                             }
 
-                        // Save completed transaction to Firestore
                         val transaction = hashMapOf(
                             "senderId" to userId,
                             "recipientId" to recipientId,
+                            "recipient" to recipient,
                             "amount" to amount,
                             "note" to note,
                             "status" to "completed",
@@ -145,13 +161,11 @@ class CountdownActivity : AppCompatActivity() {
                         )
                         db.collection("transactions").add(transaction)
 
-                        // Remove from pending
                         realtimeDb.reference
                             .child("pending_transactions")
                             .child(transactionId)
                             .removeValue()
 
-                        // Show success dialog
                         androidx.appcompat.app.AlertDialog.Builder(this)
                             .setTitle("✅ Transaction Complete!")
                             .setMessage(
@@ -159,17 +173,26 @@ class CountdownActivity : AppCompatActivity() {
                                     .format(amount, recipient)
                             )
                             .setPositiveButton("Done") { _, _ ->
-                                startActivity(Intent(this, HomeActivity::class.java))
+                                startActivity(
+                                    Intent(this, HomeActivity::class.java)
+                                )
                                 finish()
                             }
                             .setCancelable(false)
                             .show()
                     }
             }
+            .addOnFailureListener {
+                Toast.makeText(
+                    this,
+                    "⚠️ Transaction failed. Please try again.",
+                    Toast.LENGTH_LONG
+                ).show()
+                undoTransaction()
+            }
     }
 
     private fun undoTransaction() {
-        // Remove pending transaction
         realtimeDb.reference
             .child("pending_transactions")
             .child(transactionId)

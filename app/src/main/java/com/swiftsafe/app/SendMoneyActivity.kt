@@ -45,7 +45,7 @@ class SendMoneyActivity : AppCompatActivity() {
 
         // Send Money button click
         btnSendMoney.setOnClickListener {
-            val recipient = etRecipient.text.toString().trim()
+            val recipient = etRecipient.text.toString().trim().lowercase()
             val amountStr = etAmount.text.toString().trim()
             val note = etNote.text.toString().trim()
 

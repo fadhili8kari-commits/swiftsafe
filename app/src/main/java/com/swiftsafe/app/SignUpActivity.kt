@@ -35,7 +35,7 @@ class SignUpActivity : AppCompatActivity() {
         // Sign Up button click
         btnSignUp.setOnClickListener {
             val fullName = etFullName.text.toString().trim()
-            val email = etEmail.text.toString().trim()
+            val email = etEmail.text.toString().trim().lowercase()
             val phone = etPhone.text.toString().trim()
             val password = etPassword.text.toString().trim()
             val confirmPassword = etConfirmPassword.text.toString().trim()
