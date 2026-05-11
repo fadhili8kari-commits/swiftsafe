@@ -45,6 +45,7 @@ class FinancialIntelligenceActivity : AppCompatActivity() {
 
                 // Load transactions
                 db.collection("transactions")
+                    .whereEqualTo("senderId", userId)
                     .get()
                     .addOnSuccessListener { documents ->
                         var sentCount = 0
